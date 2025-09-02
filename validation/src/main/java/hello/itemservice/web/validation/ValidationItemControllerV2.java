@@ -143,6 +143,11 @@ public class ValidationItemControllerV2 {
         log.info("ObjectName={}", bindingResult.getObjectName());
         log.info("target={}", bindingResult.getTarget());
 
+        if (bindingResult.hasErrors()) {
+            log.info("errors={}", bindingResult);
+            return "validation/v2/addForm";
+        }
+
         if (!StringUtils.hasText(item.getItemName())) {
             bindingResult.rejectValue("itemName", "required");
         }
@@ -157,11 +162,6 @@ public class ValidationItemControllerV2 {
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
-        }
-
-        if (bindingResult.hasErrors()) {
-            log.info("errors={}", bindingResult);
-            return "validation/v2/addForm";
         }
 
         Item savedItem = itemRepository.save(item);
